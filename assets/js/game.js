@@ -16,6 +16,12 @@ console.log(
   enemyNames [3]
 );
 
+var randomNumber = function (min, max) {
+  var value = Math.floor(Math.random()* (max - min + 1) + min);
+
+  return value;
+};
+
 var fight = function (enemyName){
   //repeat and execute as long as the enemy-robot is alive
   while (playerHealth > 0 && enemyHealth > 0) {
@@ -32,14 +38,16 @@ var fight = function (enemyName){
       if (confirmSkip) {
         window.alert(playerName + " has decided to skip this fight. Goodbye!");
         //subtract money from playerMoney var for skipping
-        playerMoney = playerMoney - 10;
+        playerMoney = Math.max(0, playerMoney - 10);
         console.log("playerMoney", playerMoney);
         break;
       }
     }
 
     //remove enemy's health by subtracking the amount set in the player's attack var
-    enemyHealth = enemyHealth - playerAttack;
+    var damage = randomNumber(playerAttack - 3, playerAttack);
+    enemyHealth = Math.max(0, enemyHealth - damage);
+    
     console.log(
       playerName + " attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remainig."
     );
@@ -58,7 +66,7 @@ var fight = function (enemyName){
     }
 
     //remove player's health by subtracting the amount set in the enemy's attack var
-    playerHealth = playerHealth - enemyAttack;
+    playerHealth = Math.max(0, playerHealth - enemyAttack);
     console.log(
       enemyName + " attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining."
     );
@@ -91,7 +99,7 @@ var startGame = function (){
       var pickedEnemyName = enemyNames[i];
 
       // reset enemyHealth before starting new fight
-      enemyHealth = 50;
+      enemyHealth = randomNumber(40, 60);
 
       //use debugger to pause script from running and check what's going on at that moment in the code
       //debugger; 
@@ -122,13 +130,17 @@ var startGame = function (){
 
 // function to end the entire game
 var endGame = function () {
+  window.alert("The game has now ended. Let's see how you did!");
+  
   // if player is still alive, player wins!
   if (playerHealth > 0) {
     window.alert("Great job, you've survived the game! You now have a score of " + playerMoney + ".");
   }
   else {
-    window.alert("The game has now ended. Let's see how you did!");
+    window.alert("You've lost your robot in battle!");
   }
+
+  //ask player if they would like to play again
   var playAgainConfrim = window.confirm("Would you like to play again?");
   if (playAgainConfrim) {
     //restart the game
@@ -141,7 +153,8 @@ var endGame = function () {
 
 var shop = function () {
   // ask player what they'd like to do
-  var shopOptionPrompt = window.prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter 'REFIL', 'UPGRADE', or 'LEAVE' to make a choice."
+  var shopOptionPrompt = window.prompt(
+    "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter 'REFIL', 'UPGRADE', or 'LEAVE' to make a choice."
   );
   // use switch to carry out action
   switch (shopOptionPrompt) {
